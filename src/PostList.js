@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Table, Button, Alert } from 'react-bootstrap';
+import axios from 'axios'
 
 class PostList extends React.Component {
   constructor(props) {
@@ -10,12 +11,13 @@ class PostList extends React.Component {
       posts: [],
       response: {}
     }
+
   }
 
   componentDidMount() {
     const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
 
-    fetch(apiUrl)
+    /*fetch(apiUrl)
       .then(res => res.json())
       .then(
         (result) => {
@@ -26,7 +28,18 @@ class PostList extends React.Component {
         (error) => {
           this.setState({ error });
         }
-      )
+      )*/
+
+      axios.get(apiUrl).then(
+        (result) => {
+          this.setState({
+            posts: result.data
+          });
+        },
+        (error) => {
+          this.setState({ error });
+        }
+      );
   }
 
 
@@ -37,7 +50,7 @@ class PostList extends React.Component {
     const formData = new FormData();
     formData.append('id', id);
 
-    const options = {
+    /*const options = {
       method: 'DELETE',
       body: formData
     }
@@ -55,8 +68,20 @@ class PostList extends React.Component {
           this.setState({ error });
         }
       )
-      console.log(apiUrl)
-  }
+      console.log(apiUrl)*/
+
+      axios.delete(apiUrl).then(
+        (result) => {
+          this.setState({
+            response: result,
+            posts: posts.filter(post => post.id !== id)
+          });
+        },
+        (error) => {
+          this.setState({ error });
+        }
+      )
+      }
 
 
 
@@ -73,7 +98,6 @@ class PostList extends React.Component {
           <h2>Posts List</h2>
           {this.state.response.message && <Alert variant="info">{this.state.response.message}</Alert>}
           <Table>
-            
             <tbody>
               {posts.map(post => (
                 <tr key={post.id}>

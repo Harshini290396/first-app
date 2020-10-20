@@ -4,6 +4,7 @@ import './App.css';
 import { Container, Button, Alert } from 'react-bootstrap';
 import PostList from './PostList';
 import AddPost from './AddPost';
+import axios from 'axios'
 
 class App extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class App extends Component {
       isEditPost: false
     }
     this.onFormSubmit = this.onFormSubmit.bind(this);
+   // this.onFormSubmit1 = this.onFormSubmit1.bind(this);
   }
 
   onCreate() {
@@ -28,7 +30,7 @@ class App extends Component {
     const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
 
-    const options = {
+   /* const options = {
       method: 'POST',
       body: JSON.stringify(data),
       myHeaders
@@ -47,15 +49,28 @@ class App extends Component {
       (error) => {
         this.setState({ error });
       }
-    )
+    )*/
+
+    axios.post(apiUrl, data).then(result => {
+      this.setState({
+        response: result,
+        isAddPost: false,
+        isEditPost: false
+      })
+      console.log(this.state.response);
+    },
+    (error) => {
+      this.setState({ error });
+    })
   }
 
   editPost = id => {
 
-    const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+    const apiUrl = 'https://jsonplaceholder.typicode.com/posts/'+id;
     const formData = new FormData();
     formData.append('id', id);
 
+/*
     const options  = {
       method: 'POST',
       body: formData
@@ -71,6 +86,22 @@ class App extends Component {
             isAddPost: true
           });
           console.log(result);
+          console.log(apiUrl)
+        },
+        (error) => {
+          this.setState({ error });
+        }
+      )
+*/
+      axios.put(apiUrl, formData).then(
+        (result) => {
+          this.setState({
+            post: result,
+            isEditPost: true,
+            isAddPost: true
+          });
+          console.log(result);
+          console.log(this.onFormSubmit)
           console.log(apiUrl)
         },
         (error) => {
@@ -94,6 +125,7 @@ class App extends Component {
           {!this.state.isAddPost && <PostList editPost={this.editPost}/>}
           { postForm }
           {this.state.error && <div>Error: {this.state.error.message}</div>}
+
         </Container>
       </div>
     );

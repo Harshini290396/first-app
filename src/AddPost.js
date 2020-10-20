@@ -33,21 +33,14 @@ class AddPost extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     this.props.onFormSubmit(this.state);
+    //this.props.onFormSubmit1(this.state);
     this.setState(this.initialState);
   }
 
   render() {
 
-    let page;
-    if(this.state.id) {
-      page = <h2>Update Post</h2>
-    } else {
-      page = <h2>Add Post</h2>
-    }
-
     return(
       <div>
-        {page}
         <Row>
           <Col sm={6}>
             <Form onSubmit={this.handleSubmit}>
